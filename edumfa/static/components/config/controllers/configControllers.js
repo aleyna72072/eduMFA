@@ -999,10 +999,11 @@ myApp.controller("machineResolverController", ["$scope", "ConfigFactory",
 
 myApp.controller("LdapResolverController", ["$scope", "ConfigFactory", "$state",
                                             "$stateParams", "inform",
-                                            "gettextCatalog",
+                                            "gettextCatalog", "$location",
                                             function ($scope, ConfigFactory,
                                                       $state, $stateParams,
-                                                      inform, gettextCatalog) {
+                                                      inform, gettextCatalog,
+                                                      $location) {
     /*
      BINDDN, BINDPW, LDAPURI, TIMEOUT, LDAPBASE, LOGINNAMEATTRIBUTE,
      LDAPSEARCHFILTER,
@@ -1079,6 +1080,19 @@ myApp.controller("LdapResolverController", ["$scope", "ConfigFactory", "$state",
         ConfigFactory.setResolver($scope.resolvername, $scope.params, function (data) {
             $scope.set_result = data.result.value;
             $scope.getResolvers();
+            // If an existing resolver is edited, the path is:
+            // "/config/resolvers/ldap/RESOLVERNAME"
+            let isExistingResolver = ($location.path() !== "/config/resolvers/ldap");
+            // If the resolver name changes, the original resolver does not get
+            // edited, but a copy with the modification gets created. As
+            // the original resolver did not change, we do not need to restart
+            // eduMFA.
+            let oldResolverName = $location.path().split("/");
+            oldResolverName = oldResolverName[oldResolverName.length-1];
+            let resolverNameStayedSame = (oldResolverName === $scope.resolvername);
+            if (isExistingResolver && resolverNameStayedSame) {
+                $scope.ldapRestartDialog();
+            }
             $state.go("config.resolvers.list");
         });
     };
