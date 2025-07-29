@@ -5,14 +5,10 @@ set -e
 sleep 5
 
 # Create enckey if doesn't exist yet
-if [ ! -f /etc/edumfa/enckey ]; then
-  edumfa-manage create_enckey
-fi
+edumfa-manage create_enckey || true
 
 # Create audit keys if they don't exist yet
-if [[ ! -f /etc/edumfa/pubkey.pem && ! -f /etc/edumfa/private.pem ]]; then
-  edumfa-manage create_audit_keys
-fi
+edumfa-manage create_audit_keys || true
 
 # Create DB
 echo "Creating DB"
