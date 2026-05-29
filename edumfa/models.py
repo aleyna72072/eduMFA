@@ -1895,7 +1895,7 @@ class MachineTokenOptions(db.Model):
 
     def __init__(self, machinetoken_id, key, value):
         log.debug(f"setting {key!r} to {value!r} for MachineToken {machinetoken_id}")
-        self.machinetoken_id = machinetoken_id
+        self.machinetoken_id = int(machinetoken_id)
         self.mt_key = convert_column_to_unicode(key)
         self.mt_value = convert_column_to_unicode(value)
 
@@ -2732,6 +2732,7 @@ class ClientApplication(MethodsMixin, db.Model):
                 db.session.add(self)
                 db.session.commit()
             except (OperationalError, IntegrityError) as e:
+                db.session.rollback()
                 log.warning(f"Unable to write ClientApplication entry to db: {e}")
         else:
             # update
