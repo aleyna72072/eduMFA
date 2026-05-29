@@ -178,7 +178,7 @@ def _create_token_query(
     if user is not None and not user.is_empty():
         # extract the realm from the user object:
         realm = user.realm
-    if for_update:
+    if False:
         sql_query = sql_query.with_for_update(key_share=True)
     if tokentype is not None and tokentype.strip("*"):
         # filter for type
