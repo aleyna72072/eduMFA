@@ -2730,9 +2730,12 @@ class ClientApplication(MethodsMixin, db.Model):
             # create a new one
             try:
                 db.session.add(self)
+                log.warning("111111111111111111")
+                from time import sleep
+                sleep(20)
                 db.session.commit()
             except (OperationalError, IntegrityError) as e:
-                db.session.rollback()
+                #db.session.rollback()
                 log.warning(f"Unable to write ClientApplication entry to db: {e}")
         else:
             # update
@@ -2743,8 +2746,12 @@ class ClientApplication(MethodsMixin, db.Model):
                 ClientApplication.query.filter(
                     ClientApplication.id == clientapp.id
                 ).update(values)
+                log.warning("2222222222222222")
+                from time import sleep
+                sleep(20)
                 db.session.commit()
             except (OperationalError, IntegrityError) as e:
+                #db.session.rollback()
                 log.warning(f"Unable to update ClientApplication entry: {e}")
 
     def __repr__(self):
